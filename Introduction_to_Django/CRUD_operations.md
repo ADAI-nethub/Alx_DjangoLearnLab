@@ -1,51 +1,40 @@
-# CRUD Operations Documentation
+# CRUD Operations for Book Model
 
-## 1. Create Operation
+## Create
 ```python
 from bookshelf.models import Book
-book = Book.objects.create(
+new_book = Book.objects.create(
     title="1984",
     author="George Orwell",
     publication_year=1949
 )
-```
-**Output:**
-```
-Created: 1984 by George Orwell
+# Output: <Book: 1984>
 ```
 
-## 2. Retrieve Operation
+## Retrieve
 ```python
-book = Book.objects.get(title="1984")
-print(f"Title: {book.title}")
-print(f"Author: {book.author}")
-print(f"Year: {book.publication_year}")
-```
-**Output:**
-```
-Title: 1984
-Author: George Orwell
-Year: 1949
+from bookshelf.models import Book
+all_books = Book.objects.all()
+for book in all_books:
+    print(f"Title: {book.title}, Author: {book.author}, Year: {book.publication_year}")
+# Output: Title: 1984, Author: George Orwell, Year: 1949
 ```
 
-## 3. Update Operation
+## Update
 ```python
+from bookshelf.models import Book
 book = Book.objects.get(title="1984")
 book.title = "Nineteen Eighty-Four"
 book.save()
-```
-**Verification Output:**
-```
-After Update:
-New Title: Nineteen Eighty-Four
+print(book.title)
+# Output: Nineteen Eighty-Four
 ```
 
-## 4. Delete Operation
+## Delete
 ```python
-Book.objects.get(title="Nineteen Eighty-Four").delete()
-```
-**Verification Output:**
-```
-After Delete:
-Books in DB: 0
+from bookshelf.models import Book
+book = Book.objects.get(title="Nineteen Eighty-Four")
+book.delete()
+print(Book.objects.all())
+# Output: <QuerySet []>
 ```

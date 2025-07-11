@@ -6,9 +6,8 @@ book = Book.objects.get(title="Nineteen Eighty-Four")
 book.delete()
 
 # Verify deletion
-remaining_books = Book.objects.all()
-print(f"Books remaining: {remaining_books.count()}")
+print(Book.objects.all())
 
 # Expected output:
-# Books remaining: 0
+# <QuerySet []>
 ```
