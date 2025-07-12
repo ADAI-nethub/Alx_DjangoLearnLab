@@ -1,3 +1,9 @@
+from django.contrib import admin
+from .models import Book  # ✅ Import the Book model
+
+# ✅ Register the Book model with Django Admin
+admin.site.register(Book)
+
 from django.db import models
 
 class Book(models.Model):
@@ -9,7 +15,4 @@ class Book(models.Model):
     publication_year = models.IntegerField()
 
     def __str__(self):
-        """
-        String representation of the Book model.
-        """
         return f"{self.title} by {self.author} ({self.publication_year})"
