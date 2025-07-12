@@ -1,9 +1,3 @@
-from bookshelf.models import Book
-
-# Retrieve a specific book by title
 book = Book.objects.get(title="1984")
-
-# Print the book's details
-print(f"Title: {book.title}")
-print(f"Author: {book.author}")
-print(f"Year: {book.publication_year}")
+print(book.title, book.author, book.publication_year)
+# Output: 1984 George Orwell 1949
