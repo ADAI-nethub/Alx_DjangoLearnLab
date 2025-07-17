@@ -4,6 +4,8 @@ from .views import (
     add_book, edit_book, delete_book
 )
 
+# URLs: add_book/, edit_book/, delete_book/
+
 urlpatterns = [
     path('books/', list_books, name='list_books'),
     path('library/<int:pk>/', LibraryDetailView.as_view(), name='library_detail'),
@@ -13,7 +15,6 @@ urlpatterns = [
     path('books/<int:pk>/edit/', edit_book, name='edit_book'),
     path('books/<int:pk>/delete/', delete_book, name='delete_book'),
 ]
-
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
@@ -29,3 +30,4 @@ def register_view(request):
     else:
         form = UserCreationForm()
     return render(request, 'relationship_app/register.html', {'form': form})
+
