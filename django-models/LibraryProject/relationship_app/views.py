@@ -1,6 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-   # ✅ This is what the check is looking for
-
+from django.views.generic.detail import DetailView 
 from .models import Library
 from .models import Book
 
@@ -41,3 +40,58 @@ class CustomLoginView(LoginView):
 def logout_view(request):
     logout(request)
     return render(request, 'relationship_app/logout.html')
+
+from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+class UserProfile(models.Model):
+    ROLE_CHOICES = [
+        ('Admin', 'Admin'),
+        ('Librarian', 'Librarian'),
+        ('Member', 'Member'),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.role}"
+
+# Automatically create or update user profile
+@receiver(post_save, sender=User)
+def create_or_update_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance)
+    else:
+        instance.userprofile.save()
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test, login_required
+from .models import UserProfile
+
+# Helper functions
+def is_admin(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
+
+def is_librarian(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
+
+def is_member(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
+
+# Views
+@user_passes_test(is_admin)
+@login_required
+def admin_view(request):
+    return render(request, 'relationship_app/admin_view.html')
+
+@user_passes_test(is_librarian)
+@login_required
+def librarian_view(request):
+    return render(request, 'relationship_app/librarian_view.html')
+
+@user_passes_test(is_member)
+@login_required
+def member_view(request):
+    return render(request, 'relationship_app/member_view.html')
