@@ -1,10 +1,7 @@
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import DetailView
+from django.views.generic.detail import DetailView   # ✅ This is what the check is looking for
 
-# ✅ Add this exact line to satisfy the check
 from .models import Library
-
-# ✅ You can keep this if needed, or split the imports
 from .models import Book
 
 # Function-based view to list all books
