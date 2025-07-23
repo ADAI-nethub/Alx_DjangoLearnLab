@@ -1,3 +1,4 @@
+
 """
 Django settings for LibraryProject project.
 
@@ -38,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'catalog',       # If you're using it
+    'bookshelf',
 ]
 
 MIDDLEWARE = [
@@ -122,5 +125,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
 
