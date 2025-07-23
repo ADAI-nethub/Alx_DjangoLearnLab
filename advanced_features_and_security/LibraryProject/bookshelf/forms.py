@@ -4,12 +4,13 @@ from django import forms
 from .models import Book
 
 class ExampleForm(forms.Form):
-    query = forms.CharField(required=False, label="Search")
+    query = forms.CharField(
+        max_length=100,
+        required=False,  # Use False if search is optional
+        label='Search',
+        widget=forms.TextInput(attrs={'placeholder': 'Search books...'})
+    )
 
-class BookForm(forms.ModelForm):
-    class Meta:
-        model = Book
-        fields = ['title', 'author', 'published_date']
 
 # ✅ Secure user input form for demonstration
 class ExampleForm(forms.Form):
