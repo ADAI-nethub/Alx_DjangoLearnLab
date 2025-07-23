@@ -10,11 +10,11 @@ Security Documentation - views.py
 For more information, see Django security practices: https://docs.djangoproject.com/en/stable/topics/security/
 """
 
-
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Book
 from .forms import BookForm, ExampleForm  # ✅ Import ExampleForm for secure input handling
+
 
 # 📘 Secure book creation with validation and permissions
 @permission_required('bookshelf.can_create', raise_exception=True)

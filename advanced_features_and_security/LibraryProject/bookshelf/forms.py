@@ -1,5 +1,10 @@
+# bookshelf/forms.py
+
 from django import forms
 from .models import Book
+
+class ExampleForm(forms.Form):
+    query = forms.CharField(required=False, label="Search")
 
 class BookForm(forms.ModelForm):
     class Meta:
@@ -14,3 +19,4 @@ class ExampleForm(forms.Form):
         label='Search',
         widget=forms.TextInput(attrs={'placeholder': 'Search books...'})
     )
+
