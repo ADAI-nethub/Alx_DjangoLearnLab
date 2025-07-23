@@ -23,15 +23,35 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-#a^=wm1s&f$&q8o2l6vi&83g8iw22kd3)&*@$_3s1jh&rq2#au'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Disable debug mode in production
+DEBUG = False
 
-ALLOWED_HOSTS = []
+# Ensure you define allowed domains
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'yourdomain.com']
+
+# Prevent clickjacking
+X_FRAME_OPTIONS = 'DENY'
+
+# Browser XSS protection
+SECURE_BROWSER_XSS_FILTER = True
+
+# Prevent MIME type sniffing
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Send cookies only over HTTPS
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Optional: Use HTTP Strict Transport Security (only if HTTPS is enforced)
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
 
 
 # Application definition
 
-INSTALLED_APPS = [
+INSTALLED_APPS += ['csp'][
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +63,7 @@ INSTALLED_APPS = [
     'bookshelf',
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE += [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,7 +71,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
 ]
+
+# Basic CSP example - restrict where resources can come from
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'", 'https://ajax.googleapis.com')  # allow JS from self + CDN
+CSP_STYLE_SRC = ("'self'", 'https://fonts.googleapis.com')
+CSP_FONT_SRC = ("'self'", 'https://fonts.gstatic.com')
 
 ROOT_URLCONF = 'LibraryProject.urls'
 
