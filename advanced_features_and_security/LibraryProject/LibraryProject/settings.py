@@ -46,12 +46,14 @@ SESSION_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 3600
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
+SECURE_SSL_REDIRECT = True
+
 
 
 
 # Application definition
 
-INSTALLED_APPS += ['csp'][
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -59,11 +61,13 @@ INSTALLED_APPS += ['csp'][
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
-    'catalog',       # If you're using it
+    'catalog',       # Only if used
     'bookshelf',
+    'csp',           # ✅ add CSP here
 ]
 
-MIDDLEWARE += [
+
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -71,8 +75,9 @@ MIDDLEWARE += [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'csp.middleware.CSPMiddleware',
+    'csp.middleware.CSPMiddleware',  # ✅ CSP middleware must come last
 ]
+
 
 # Basic CSP example - restrict where resources can come from
 CSP_DEFAULT_SRC = ("'self'",)

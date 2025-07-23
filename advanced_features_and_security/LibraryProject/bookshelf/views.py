@@ -1,3 +1,16 @@
+"""
+Security Documentation - views.py
+
+✔ Uses Django ORM to avoid SQL injection.
+✔ Validates all user input using Django Forms (BookForm, ExampleForm).
+✔ Applies fine-grained permission controls using @permission_required decorators.
+✔ All POST requests include {% csrf_token %} to protect against CSRF.
+✔ Delete views use POST method only with confirmation step to prevent accidental deletions.
+
+For more information, see Django security practices: https://docs.djangoproject.com/en/stable/topics/security/
+"""
+
+
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Book
