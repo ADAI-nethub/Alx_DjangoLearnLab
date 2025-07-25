@@ -172,3 +172,7 @@ SECURE_HSTS_PRELOAD = True
 # Ensure cookies are only sent over HTTPS
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+
+# Trust X-Forwarded-Proto header set by reverse proxy (e.g., Nginx or Heroku)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
