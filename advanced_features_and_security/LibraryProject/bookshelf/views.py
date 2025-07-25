@@ -13,8 +13,9 @@ For more information, see Django security practices: https://docs.djangoproject.
 from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Book
-from .forms import BookForm, ExampleForm  # ✅ Import ExampleForm for secure input handling
-
+from .forms import BookForm
+from .forms import ExampleForm
+# 📚 Secure book management views
 
 # 📘 Secure book creation with validation and permissions
 @permission_required('bookshelf.can_create', raise_exception=True)
