@@ -78,11 +78,15 @@ MIDDLEWARE = [
 ]
 
 
-# Basic CSP example - restrict where resources can come from
-CSP_DEFAULT_SRC = ("'self'",)
-CSP_SCRIPT_SRC = ("'self'", 'https://ajax.googleapis.com')  # allow JS from self + CDN
-CSP_STYLE_SRC = ("'self'", 'https://fonts.googleapis.com')
-CSP_FONT_SRC = ("'self'", 'https://fonts.gstatic.com')
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        'default-src': ("'self'",),
+        'font-src': ("'self'", 'https://fonts.gstatic.com'),
+        'script-src': ("'self'", 'https://ajax.googleapis.com'),
+        'style-src': ("'self'", 'https://fonts.googleapis.com'),
+    }
+}
+
 
 ROOT_URLCONF = 'LibraryProject.urls'
 
