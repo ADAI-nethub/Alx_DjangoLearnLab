@@ -22,4 +22,8 @@ class CustomUser(AbstractUser):
     profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
 
     objects = CustomUserManager()
+
+    USERNAME_FIELD = 'username'  # or 'email' if you want to use email as the login field
+    REQUIRED_FIELDS = ['email']
+
     
