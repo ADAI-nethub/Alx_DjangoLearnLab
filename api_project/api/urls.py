@@ -44,3 +44,26 @@ urlpatterns = [
 
 # Token authentication login endpoint
 path('api-token-auth/', obtain_auth_token, name='api_token_auth')
+
+
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import WorkshopViewSet, StoryViewSet, UserProfileViewSet
+
+router = DefaultRouter()
+router.register('workshops', WorkshopViewSet)
+router.register('stories', StoryViewSet)
+router.register('users', UserProfileViewSet)
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
+
+from django.urls import path
+from .views import WorkshopListCreateView, StoryListCreateView, UserProfileRetrieveUpdateView
+
+urlpatterns = [
+    path('workshops/', WorkshopListCreateView.as_view(), name='workshop-list'),
+    path('stories/', StoryListCreateView.as_view(), name='story-list'),
+    path('profile/<int:pk>/', UserProfileRetrieveUpdateView.as_view(), name='userprofile-detail'),
+]
