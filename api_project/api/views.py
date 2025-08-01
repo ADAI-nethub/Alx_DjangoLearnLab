@@ -1,13 +1,16 @@
-from rest_framework import generics
-from .models import Book
-from .serializers import BookSerializer
 
-class BookList(generics.ListAPIView):
+
+
+# views.py
+from rest_framework import viewsets, generics  # ✅ Add 'generics' here
+from .models import Book, Story, UserProfile, Workshop  # ✅ Add Story here
+from .serializers import BookSerializer, StorySerializer, UserProfileSerializer, WorkshopSerializer
+
+class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
-    # views.py
-class BookDetail(generics.RetrieveUpdateDestroyAPIView):
+class BookList(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
@@ -15,47 +18,32 @@ class BookCreate(generics.CreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
-from rest_framework import viewsets
-from .models import Book
-from .serializers import BookSerializer
-
-class BookViewSet(viewsets.ReadOnlyModelViewSet):  # For GET only
+class BookDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
-from rest_framework import viewsets
-from .models import Book
-from .serializers import BookSerializer
-
-class BookViewSet(viewsets.ModelViewSet):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-
-
-from rest_framework.permissions import IsAuthenticated
-
-class BookViewSet(viewsets.ModelViewSet):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    permission_classes = [IsAuthenticated]  # ⛔ Only logged-in users
-
-
-from rest_framework import viewsets # what is the difference?
-from rest_framework import generics
-from .models import Workshop, Story, UserProfile
-from .serializers import WorkshopSerializer, StorySerializer, UserProfileSerializer
-
-# Workshop List & Create API
-class WorkshopListCreateView(generics.ListCreateAPIView):
-    queryset = Workshop.objects.all()
-    serializer_class = WorkshopSerializer
-
-# Story List & Create API
+# Story views
 class StoryListCreateView(generics.ListCreateAPIView):
     queryset = Story.objects.all()
     serializer_class = StorySerializer
 
-# UserProfile Retrieve & Update API
+# UserProfile views
 class UserProfileRetrieveUpdateView(generics.RetrieveUpdateAPIView):
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+
+class WorkshopListCreateView(generics.ListCreateAPIView):
+    queryset = Workshop.objects.all()
+    serializer_class = WorkshopSerializer
+
+class WorkshopViewSet(viewsets.ModelViewSet):
+    queryset = Workshop.objects.all()
+    serializer_class = WorkshopSerializer
+
+class StoryViewSet(viewsets.ModelViewSet):
+    queryset = Story.objects.all()
+    serializer_class = StorySerializer
+
+class UserProfileViewSet(viewsets.ModelViewSet):
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
