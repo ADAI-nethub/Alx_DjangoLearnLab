@@ -1,8 +1,7 @@
-from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from rest_framework import permissions
-from rest_framework.response import Response
 
+from rest_framework import generics, status, permissions
+from rest_framework.response import Response
 from .models import Book
 from .serializers import BookSerializer
 from .permissions import IsOwnerOrReadOnly
@@ -63,33 +62,3 @@ class BookCreateView(generics.CreateAPIView):
             "message": "Book created successfully",
             "data": serializer.data
         }, status=status.HTTP_201_CREATED, headers=headers)
-
-
-class BookUpdateView(generics.RetrieveUpdateAPIView):
-    """
-    PUT/PATCH: Update an existing book (only owner, authenticated)
-    """
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
-
-    def update(self, request, *args, **kwargs):
-        partial = kwargs.pop("partial", False)
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response({
-            "status": "success",
-            "message": "Book updated successfully",
-            "data": serializer.data
-        })
-
-
-class BookDeleteView(generics.DestroyAPIView):
-    """
-    DELETE: Remove a book (only owner, authenticated)
-    """
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
