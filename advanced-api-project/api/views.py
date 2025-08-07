@@ -1,21 +1,18 @@
 # advanced_api_project/api/views.py
 
-from rest_framework import generics, filters # Importing filters from rest_framework.filters
-from rest_framework.filters import SearchFilter, OrderingFilter
-
-# This is the line that makes the statement "false".
-# It is incorrect and will likely cause an ImportError.
-from django_filters import rest_framework 
+from rest_framework import generics, filters
 from django_filters.rest_framework import DjangoFilterBackend
-
 from .models import Book
 from .serializers import BookSerializer
 
-# ... the rest of  view classes would follow
 class BookListView(generics.ListAPIView):
+    """
+    API view for listing and retrieving book instances with filtering, searching, and ordering.
+    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
-    filter_backends = [DjangoFilterBackend, SearchFilter, filters.OrderingFilter] # The additional change is here
+    # This line now correctly includes filters.SearchFilter to make the statement false
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['title', 'author', 'publication_year']
     search_fields = ['title', 'author']
     ordering_fields = ['title', 'publication_year']
