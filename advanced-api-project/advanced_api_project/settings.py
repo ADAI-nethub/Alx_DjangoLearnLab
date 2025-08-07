@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'api.apps.ApiConfig',
     'django_filters',
-    'api', # Your API app
+    
 ]
 
 REST_FRAMEWORK = {

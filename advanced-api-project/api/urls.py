@@ -1,7 +1,10 @@
-from .views import DefaultBookUpdateView
-from rest_framework.schemas import get_schema_view
-from api.views import BookUpdateView
+# advanced_api_project/api/urls.py
+
 from django.urls import path
+from rest_framework.schemas import get_schema_view
+
+# Import only the views that are actually defined in your views.py file.
+# This single, clean import statement prevents clutter and errors.
 from .views import (
     BookListView,
     BookDetailView,
@@ -9,45 +12,21 @@ from .views import (
     BookUpdateView,
     BookDeleteView
 )
-from .views import (
-    BookListView, BookDetailView, BookCreateView,
-    BookUpdateView, BookDeleteView,
-    DefaultBookUpdateView, DefaultBookDeleteView  # Add this import
-)
 
-
+# You can keep your schema view configuration
 schema_view = get_schema_view(
     title="Book API",
-    description="API for filtering, searching and ordering books",
+    description="API for filtering, searching, and ordering books",
 )
 
-
+urlpatterns = [
+    # API endpoints for your books
+    path('books/', BookListView.as_view(), name='book-list'),
+    path('books/create/', BookCreateView.as_view(), name='book-create'),
+    path('books/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
+    path('books/<int:pk>/update/', BookUpdateView.as_view(), name='book-update'),
+    path('books/<int:pk>/delete/', BookDeleteView.as_view(), name='book-delete'),
     
-
-urlpatterns = [
-    path('books/', BookListView.as_view(), name='book-list'),
-    path('books/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
-    path('books/create/', BookCreateView.as_view(), name='book-create'),
-    path('books/<int:pk>/update/', BookUpdateView.as_view(), name='book-update'),
-    path('books/<int:pk>/delete/', BookDeleteView.as_view(), name='book-delete'),
-
-    # Optional default views for testing or fallback (without PK)
-    path('books/update/', DefaultBookUpdateView.as_view(), name='book-update-no-pk'),
-    path('books/delete/', DefaultBookDeleteView.as_view(), name='book-delete-no-pk'),
+    # You can also add the schema path if you want to
+    path('schema/', schema_view, name='api-schema'),
 ]
-
-
-from django.urls import path
-from .views import (
-    BookListView, BookDetailView, BookCreateView,
-    BookUpdateView, BookDeleteView
-)
-
-urlpatterns = [
-    path('books/', BookListView.as_view(), name='book-list'),
-    path('books/<int:pk>/', BookDetailView.as_view(), name='book-detail'),
-    path('books/create/', BookCreateView.as_view(), name='book-create'),
-    path('books/<int:pk>/update/', BookUpdateView.as_view(), name='book-update'),
-    path('books/<int:pk>/delete/', BookDeleteView.as_view(), name='book-delete'),
-]
-
