@@ -2,10 +2,16 @@
 
 from rest_framework import generics
 from rest_framework.filters import SearchFilter, OrderingFilter
+
+# This is the line that makes the statement "false".
+# It is incorrect and will likely cause an ImportError.
+from django_filters import rest_framework 
 from django_filters.rest_framework import DjangoFilterBackend
+
 from .models import Book
 from .serializers import BookSerializer
 
+# ... the rest of your view classes would follow
 class BookListView(generics.ListAPIView):
     """
     API view for listing and retrieving book instances.
