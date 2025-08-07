@@ -1,45 +1,24 @@
-"""
-The AuthorSerializer includes a nested BookSerializer to represent the one-to-many
-relationship between authors and books. When serializing an author, all their
-related books will be included in the output.
-
-The BookSerializer includes custom validation to ensure data integrity for the
-publication_year field and handles owner assignment automatically.
-"""
-from rest_framework import serializers
+from django.contrib.auth.models import User
+from rest_framework.test import APITestCase
+from rest_framework import status
 from .models import Author, Book
-from datetime import datetime
+from django.urls import reverse
 
-class BookSerializer(serializers.ModelSerializer):
-    """Serializer for the Book model with custom validation and owner handling"""
-    class Meta:
-        model = Book
-        fields = ['id', 'title', 'author', 'publication_year', 'owner']
-        extra_kwargs = {
-            'owner': {'read_only': True},  # Owner is set automatically in views
-            'author': {'required': True}   # Author must be provided
+class BookAPITestCase(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpass')
+        self.author = Author.objects.create(name="Author Name")
+        self.client.force_authenticate(user=self.user)  # Authenticate the client
+
+    def test_create_book(self):
+        url = reverse('book-list')  # adjust this name based on your router config
+        data = {
+            'title': 'New Book',
+            'author': self.author.id,
+            'publication_year': 2005,
         }
+        response = self.client.post(url, data, format='json')  # Make sure to use format='json'
 
-    def validate_publication_year(self, value):
-        """
-        Validate that publication year is:
-        - Not in the future
-        - Reasonably recent (after 1800)
-        """
-        current_year = datetime.now().year
-        if value < 1800:
-            raise serializers.ValidationError("Publication year too far in the past")
-        if value > current_year:
-            raise serializers.ValidationError("Publication year cannot be in the future")
-        return value
-
-class AuthorSerializer(serializers.ModelSerializer):
-    """Serializer for the Author model with nested books relationship"""
-    books = BookSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Author
-        fields = ['id', 'name', 'bio', 'books']
-        extra_kwargs = {
-            'bio': {'required': False}  # Bio is optional
-        }
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Book.objects.count(), 1)
+        self.assertEqual(Book.objects.first().owner, self.user)
