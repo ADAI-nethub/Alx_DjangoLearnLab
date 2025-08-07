@@ -1,11 +1,10 @@
 # advanced_api_project/api/views.py
 
 from rest_framework import generics
+from rest_framework import filters # Importing filters from rest_framework.filters
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-# This is the line that makes the statement "false".
-# It is incorrect and will likely cause an ImportError.
-from django_filters import rest_framework 
+from django_filters import rest_framework # DjangoFilterBackend
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .models import Book
