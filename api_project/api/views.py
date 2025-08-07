@@ -36,3 +36,8 @@ class WorkshopStoriesList(generics.ListCreateAPIView):
     def get_queryset(self):
         workshop_id = self.kwargs['workshop_id']
         return Story.objects.filter(workshop_id=workshop_id)
+    
+class BookList(generics.ListAPIView):
+    """List view for all books"""
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
