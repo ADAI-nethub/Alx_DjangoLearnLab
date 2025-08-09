@@ -1,24 +1,24 @@
-from django.contrib.auth.models import User
-from rest_framework.test import APITestCase
-from rest_framework import status
-from .models import Author, Book
-from django.urls import reverse
+from rest_framework import serializers
+from .models import Book
 
-class BookAPITestCase(APITestCase):
-    def setUp(self):
-        self.user = User.objects.create_user(username='testuser', password='testpass')
-        self.author = Author.objects.create(name="Author Name")
-        self.client.force_authenticate(user=self.user)  # Authenticate the client
+class BookSerializer(serializers.ModelSerializer):
+    # Optional: show author name in the response
+    author_name = serializers.ReadOnlyField(source='author.name')
 
-    def test_create_book(self):
-        url = reverse('book-list')  # adjust this name based on your router config
-        data = {
-            'title': 'New Book',
-            'author': self.author.id,
-            'publication_year': 2005,
-        }
-        response = self.client.post(url, data, format='json')  # Make sure to use format='json'
+    class Meta:
+        model = Book
+        fields = ['id', 'title', 'author', 'author_name', 'publication_year', 'owner']
+        read_only_fields = ['owner']  # prevent manual assignment via API
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Book.objects.count(), 1)
-        self.assertEqual(Book.objects.first().owner, self.user)
+    def validate_publication_year(self, value):
+        """Custom validation for publication year"""
+        if value < 0:
+            raise serializers.ValidationError("Publication year cannot be negative.")
+        return value
+
+    def create(self, validated_data):
+        """Ensure the owner is the logged-in user"""
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            validated_data['owner'] = request.user
+        return super().create(validated_data)
