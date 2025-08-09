@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Book
+from .models import Author, Book
+
 
 class BookSerializer(serializers.ModelSerializer):
     # Optional: show author name in the response
@@ -22,3 +23,12 @@ class BookSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             validated_data['owner'] = request.user
         return super().create(validated_data)
+
+
+class AuthorSerializer(serializers.ModelSerializer):
+    # ✅ Nested relationship: include books written by the author
+    books = BookSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Author
+        fields = ['id', 'name', 'books']
