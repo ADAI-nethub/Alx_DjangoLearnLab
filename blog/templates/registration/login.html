@@ -1,43 +1,18 @@
-{% extends "blog/base.html" %}  <!-- Changed to your specific base template -->
-{% load static %}  <!-- Added for static files -->
-
-{% block content %}
-<div class="auth-wrapper">
-  <div class="auth-container">
-    <h2 class="auth-title">Login</h2>
-    
-    {% if form.errors %}
-      <div class="alert alert-danger">
-        Your username and password didn't match. Please try again.
-      </div>
-    {% endif %}
-
-    <form method="post" class="auth-form">
-      {% csrf_token %}
-      
-      <div class="form-group">
-        <label for="id_username">Username</label>
-        <input type="text" name="username" id="id_username" class="form-control" required>
-      </div>
-      
-      <div class="form-group">
-        <label for="id_password">Password</label>
-        <input type="password" name="password" id="id_password" class="form-control" required>
-      </div>
-
-      <button type="submit" class="btn btn-primary auth-btn">Login</button>
-      
-      <input type="hidden" name="next" value="{{ next }}">  <!-- Important for redirects -->
-    </form>
-
-    <div class="auth-links">
-      <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
-      <p><a href="{% url 'password_reset' %}">Forgot password?</a></p>  <!-- Added password reset -->
+<!-- Add this near the form for better UX -->
+{% if next %}
+  {% if user.is_authenticated %}
+    <div class="alert alert-warning">
+      Your account doesn't have access to this page.
     </div>
-  </div>
-</div>
-{% endblock %}
+  {% else %}
+    <div class="alert alert-info">
+      Please login to access this page.
+    </div>
+  {% endif %}
+{% endif %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'blog/css/auth.css' %}">
-{% endblock %}
+<!-- Add remember me option -->
+<div class="form-group form-check">
+  <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
+  <label class="form-check-label" for="remember_me">Remember me</label>
+</div>

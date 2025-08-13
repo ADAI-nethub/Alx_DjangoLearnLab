@@ -1,56 +1,13 @@
-{% extends "base.html" %}  <!-- Assuming you have a base template -->
+<!-- Add image preview -->
+<img id="image-preview" class="rounded-circle mb-3" src="{{ user.profile.image.url }}" width="100" height="100">
 
-{% block content %}
-<div class="content-section">
-    <div class="media">
-        <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
-        <div class="media-body">
-            <h2 class="account-heading">{{ user.username }}</h2>
-            <p class="text-secondary">{{ user.email }}</p>
-        </div>
-    </div>
-    
-    <!-- FORM HERE -->
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Profile Info</legend>
-            
-            <!-- User form -->
-            <div class="form-group">
-                <label for="id_username">Username</label>
-                {{ u_form.username }}
-                {% if u_form.username.errors %}
-                    <div class="alert alert-danger">
-                        {{ u_form.username.errors }}
-                    </div>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                <label for="id_email">Email</label>
-                {{ u_form.email }}
-                {% if u_form.email.errors %}
-                    <div class="alert alert-danger">
-                        {{ u_form.email.errors }}
-                    </div>
-                {% endif %}
-            </div>
-            
-            <!-- Profile form -->
-            <div class="form-group">
-                <label for="id_image">Profile Picture</label>
-                {{ p_form.image }}
-            </div>
-            
-            <div class="form-group">
-                <label for="id_bio">Bio</label>
-                {{ p_form.bio }}
-            </div>
-        </fieldset>
-        <div class="form-group">
-            <button class="btn btn-outline-info" type="submit">Update</button>
-        </div>
-    </form>
-</div>
-{% endblock content %}
+<!-- Add to extra_js block -->
+<script>
+document.getElementById('id_image').addEventListener('change', function(e) {
+    const preview = document.getElementById('image-preview');
+    const file = e.target.files[0];
+    if (file) {
+        preview.src = URL.createObjectURL(file);
+    }
+});
+</script>
