@@ -1,10 +1,43 @@
-{% extends "base.html" %}
+{% extends "blog/base.html" %}  <!-- Changed to your specific base template -->
+{% load static %}  <!-- Added for static files -->
+
 {% block content %}
-  <h2>Login</h2>
-  <form method="post" novalidate>
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
-  <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+<div class="auth-wrapper">
+  <div class="auth-container">
+    <h2 class="auth-title">Login</h2>
+    
+    {% if form.errors %}
+      <div class="alert alert-danger">
+        Your username and password didn't match. Please try again.
+      </div>
+    {% endif %}
+
+    <form method="post" class="auth-form">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label for="id_username">Username</label>
+        <input type="text" name="username" id="id_username" class="form-control" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="id_password">Password</label>
+        <input type="password" name="password" id="id_password" class="form-control" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary auth-btn">Login</button>
+      
+      <input type="hidden" name="next" value="{{ next }}">  <!-- Important for redirects -->
+    </form>
+
+    <div class="auth-links">
+      <p>Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+      <p><a href="{% url 'password_reset' %}">Forgot password?</a></p>  <!-- Added password reset -->
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'blog/css/auth.css' %}">
 {% endblock %}
