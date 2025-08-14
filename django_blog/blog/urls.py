@@ -15,11 +15,19 @@ from .views import (
     PostDeleteView,
     register_view,
     profile_view,
+    CommentCreateView,
+    CommentUpdateView,
+    CommentDeleteView
 )
 
 app_name = 'blog'
 
 urlpatterns = [
+
+    path('post/<int:pk>/comment/new/', CommentCreateView.as_view(), name='comment_create'),
+    path('comment/<int:pk>/edit/', CommentUpdateView.as_view(), name='comment_update'),
+    path('comment/<int:pk>/delete/', CommentDeleteView.as_view(), name='comment_delete'),
+
     # Home & About
     path('', home_view, name='home'),
     path('about/', about_view, name='about'),
