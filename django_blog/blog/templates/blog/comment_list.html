@@ -1,0 +1,15 @@
+<div class="comments">
+    <h3>Comments</h3>
+    {% for comment in comments %}
+    <div class="comment">
+        <p><strong>{{ comment.author.username }}</strong> - {{ comment.created_at }}</p>
+        <p>{{ comment.content }}</p>
+        {% if comment.author == user %}
+        <a href="{% url 'comment_edit' pk=post.pk comment_pk=comment.pk %}">Edit</a>
+        <a href="{% url 'comment_delete' pk=post.pk comment_pk=comment.pk %}">Delete</a>
+        {% endif %}
+    </div>
+    {% empty %}
+    <p>No comments yet.</p>
+    {% endfor %}
+</div>

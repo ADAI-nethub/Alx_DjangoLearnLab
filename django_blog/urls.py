@@ -4,6 +4,12 @@ from . import views  # Your blog app's views
 
 
 urlpatterns = [
+    # ... your existing URLs ...
+    path('post/<int:pk>/', views.post_detail, name='post_detail'),
+    path('post/<int:pk>/comment/new/', views.post_detail, name='comment_new'),  # Handled by post_detail
+    path('post/<int:pk>/comment/<int:comment_pk>/edit/', views.comment_edit, name='comment_edit'),
+    path('post/<int:pk>/comment/<int:comment_pk>/delete/', views.comment_delete, name='comment_delete'),
+
     # Home & About
     path('', views.home_view, name='blog-home'),
     path('about/', views.about_view, name='blog-about'),
