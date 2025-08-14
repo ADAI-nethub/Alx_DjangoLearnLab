@@ -9,6 +9,21 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Comment
 from .forms import CommentForm
 
+from django.db.models import Q
+
+def post_list(request):
+    query = request.GET.get('q', '')
+    if query:
+        posts = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)  # if using django-taggit
+        ).distinct()
+    else:
+        posts = Post.objects.all().order_by('-published_date')
+
+    return render(request, 'blog/post_list.html', {'posts': posts, 'query': query})
+
 
 
 def post_create(request):
