@@ -1,19 +1,13 @@
 """
 URL configuration for blog application.
-
-Defines all URL patterns for:
-- Core pages (home, about)
-- Post CRUD operations
-- User authentication
-- Admin interface
 """
 
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from .views import (
-    home,
-    about,
+    home_view,
+    about_view,
     PostListView,
     PostDetailView,
     PostCreateView,
@@ -26,27 +20,9 @@ from .views import (
 app_name = 'blog'
 
 urlpatterns = [
-    # Core pages
-    path('', home, name='home'),
-    path('about/', about, name='about'),
-
-    # Authentication (custom views)
-    path('register/', register_view, name='register'),
-    path('profile/', profile_view, name='profile'),
-
-    # Authentication (built-in views)
-    path('login/', 
-         auth_views.LoginView.as_view(
-             template_name='registration/login.html',
-             redirect_authenticated_user=True
-         ), 
-         name='login'),
-    path('logout/', 
-         auth_views.LogoutView.as_view(
-             template_name='registration/logout.html',
-             next_page='home'
-         ), 
-         name='logout'),
+    # Home & About
+    path('', home_view, name='home'),
+    path('about/', about_view, name='about'),
 
     # Post operations
     path('posts/', PostListView.as_view(), name='post-list'),
@@ -54,6 +30,24 @@ urlpatterns = [
     path('posts/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
     path('posts/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),
     path('posts/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
+
+    # Authentication (custom views)
+    path('register/', register_view, name='register'),
+    path('profile/', profile_view, name='profile'),
+
+    # Authentication (built-in views)
+    path('login/',
+         auth_views.LoginView.as_view(
+             template_name='registration/login.html',
+             redirect_authenticated_user=True
+         ),
+         name='login'),
+    path('logout/',
+         auth_views.LogoutView.as_view(
+             template_name='registration/logout.html',
+             next_page='home'
+         ),
+         name='logout'),
 
     # Admin
     path('admin/', admin.site.urls),

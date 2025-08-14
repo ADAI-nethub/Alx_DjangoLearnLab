@@ -1,19 +1,71 @@
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
-from django.shortcuts import render
 
-def about(request):
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .models import Post
+
+
+# --- Mixins ---
+class AuthorAssignMixin:
+    """Automatically assigns the logged-in user as the author."""
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+
+# --- Post Views ---
+class PostListView(ListView):
+    model = Post
+    template_name = 'blog/post_list.html'
+    context_object_name = 'posts'
+    ordering = ['-published_date']
+
+
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'blog/post_detail.html'
+
+
+class PostCreateView(LoginRequiredMixin, AuthorAssignMixin, CreateView):
+    model = Post
+    fields = ['title', 'content']
+    template_name = 'blog/post_form.html'
+
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, AuthorAssignMixin, UpdateView):
+    model = Post
+    fields = ['title', 'content']
+    template_name = 'blog/post_form.html'
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author
+
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+    template_name = 'blog/post_confirm_delete.html'
+    success_url = '/'
+
+    def test_func(self):
+        post = self.get_object()
+        return self.request.user == post.author
+
+
+# --- Static Pages ---
+def about_view(request):
     return render(request, 'blog/about.html', {'title': 'About'})
 
 
-def home(request):
+def home_view(request):
     return render(request, 'blog/home.html')
 
 
-def register(request):
+# --- User Registration ---
+def register_view(request):
     """Handle user registration."""
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -28,8 +80,9 @@ def register(request):
     return render(request, 'blog/register.html', {'form': form})
 
 
+# --- Profile ---
 @login_required
-def profile(request):
+def profile_view(request):
     """Display and update user profile."""
     if request.method == 'POST':
         u_form = UserUpdateForm(request.POST, instance=request.user)
@@ -51,4 +104,3 @@ def profile(request):
         'u_form': u_form,
         'p_form': p_form
     })
-

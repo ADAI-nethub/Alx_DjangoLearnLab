@@ -1,0 +1,14 @@
+<!-- post_confirm_delete.html -->
+{% extends "blog/base.html" %}
+
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        <fieldset>
+            <legend>Delete Post</legend>
+            <h2>Are you sure you want to delete "{{ object.title }}"?</h2>
+        </fieldset>
+        <button type="submit">Yes, Delete</button>
+        <a href="{% url 'post-detail' object.id %}">Cancel</a>
+    </form>
+{% endblock %}
