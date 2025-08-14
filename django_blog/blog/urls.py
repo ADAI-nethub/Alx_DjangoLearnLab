@@ -24,12 +24,14 @@ urlpatterns = [
     path('', home_view, name='home'),
     path('about/', about_view, name='about'),
 
-    # Post operations
+    # Post operations (singular in URL paths to match requirements)
+    path('post/new/', PostCreateView.as_view(), name='post-create'),
+    path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
+    path('post/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),
+    path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
+
+    # Optional full list of posts
     path('posts/', PostListView.as_view(), name='post-list'),
-    path('posts/new/', PostCreateView.as_view(), name='post-create'),
-    path('posts/<int:pk>/', PostDetailView.as_view(), name='post-detail'),
-    path('posts/<int:pk>/update/', PostUpdateView.as_view(), name='post-update'),
-    path('posts/<int:pk>/delete/', PostDeleteView.as_view(), name='post-delete'),
 
     # Authentication (custom views)
     path('register/', register_view, name='register'),
