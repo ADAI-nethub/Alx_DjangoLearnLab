@@ -8,6 +8,18 @@ from .models import Post
 # If using manual tags:
 from .models import Tag
 
+from taggit.forms import TagWidget
+from taggit.managers import TaggableManager
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
+        widgets = {
+            'tags': TagWidget(),  # special widget for tag input
+        }
+
+
 class PostForm(forms.ModelForm):
     # For django-taggit:
     tags = forms.CharField(required=False, help_text="Enter tags separated by commas")
