@@ -7,8 +7,32 @@ from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import Post, Comment
-
 from .forms import CommentForm
+
+
+
+def post_create(request):
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user
+            post.save()
+            
+            # For django-taggit:
+            post.tags.add(*form.cleaned_data['tags'].split(','))
+            
+            # For manual tags:
+            # tag_names = form.cleaned_data['tag_names'].split(',')
+            # for tag_name in tag_names:
+            #     tag, created = Tag.objects.get_or_create(name=tag_name.strip())
+            #     post.tags.add(tag)
+            
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = PostForm()
+    return render(request, 'blog/post_form.html', {'form': form})
+
 
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -188,3 +212,13 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('post_detail', kwargs={'pk': self.object.post.pk})
+    
+
+    from django.shortcuts import render
+
+def handler404(request, exception):
+    return render(request, '404.html', status=404)
+
+def handler500(request):
+    return render(request, '500.html', status=500)
+
