@@ -17,12 +17,16 @@ from .views import (
     profile_view,
     CommentCreateView,
     CommentUpdateView,
-    CommentDeleteView
+    CommentDeleteView,
+    PostByTagListView
 )
 
 app_name = 'blog'
 
 urlpatterns = [
+
+    path('tags/<slug:tag_slug>/', PostByTagListView.as_view(), name='posts-by-tag'),
+
 
     path('post/new/', PostCreateView.as_view(), name='post-create'),
 
