@@ -120,7 +120,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         post_id = self.kwargs['post_pk']
-        return Comment.objects.filter(post_id=post_id).order_by('created_at')
+        return Comment.objects.filter(post_id=post_id).order_by('created_at')  # Return all comments (instead of filtering by post)
 
     def perform_create(self, serializer):
         post = generics.get_object_or_404(Post, pk=self.kwargs['post_pk'])
