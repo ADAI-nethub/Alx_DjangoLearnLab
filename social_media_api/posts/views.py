@@ -4,6 +4,40 @@ from .serializers import PostSerializer, CommentSerializer
 from accounts.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from .models import Like
+from notifications.models import Notification
+
+class PostViewSet(viewsets.ModelViewSet):
+    # ... existing code ...
+    
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def like(self, request, pk=None):
+        post = self.get_object()
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+        
+        if created:
+            # Create notification
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb="liked your post",
+                target=post
+            )
+            return Response({'status': 'post liked'})
+        return Response({'status': 'already liked'}, status=400)
+    
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def unlike(self, request, pk=None):
+        post = self.get_object()
+        try:
+            like = Like.objects.get(user=request.user, post=post)
+            like.delete()
+            return Response({'status': 'post unliked'})
+        except Like.DoesNotExist:
+            return Response({'status': 'not liked'}, status=400)
+
 class PostViewSet(viewsets.ModelViewSet):
     # ... existing code ...
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]

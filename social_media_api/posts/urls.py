@@ -6,8 +6,15 @@ from .views import PostViewSet, CommentViewSet
 router = DefaultRouter()
 router.register(r'posts', PostViewSet)
 
+# Add these after the router setup
+urlpatterns = [
+    
+]
+
 urlpatterns = [
     path('', include(router.urls)),
+    path('posts/<int:pk>/like/', PostViewSet.as_view({'post': 'like'}), name='post-like'),
+    path('posts/<int:pk>/unlike/', PostViewSet.as_view({'post': 'unlike'}), name='post-unlike'),
     path('posts/<int:post_pk>/comments/', CommentViewSet.as_view({
         'get': 'list',
         'post': 'create'
