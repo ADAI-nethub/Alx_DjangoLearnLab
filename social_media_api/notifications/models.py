@@ -10,7 +10,10 @@ class Notification(models.Model):
     target_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
     target_object_id = models.PositiveIntegerField(null=True, blank=True)
     target = GenericForeignKey('target_content_type', 'target_object_id')
-    is_read = models.BooleanField(default=False)
+
+def mark_as_read(self):
+    self.is_read = True
+    self.save(update_fields=['is_read'])
     
     # ✅ Use timestamp instead of created_at
     timestamp = models.DateTimeField(auto_now_add=True)
