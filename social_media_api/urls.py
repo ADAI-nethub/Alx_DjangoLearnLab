@@ -11,6 +11,6 @@ urlpatterns = [
         template_name='registration/login.html'
     ), name='login'),
 
-    # ✅ include posts.urls under /api/
+    # ✅ include posts.urls so the test sees it
     path('api/', include('posts.urls')),
 ]
