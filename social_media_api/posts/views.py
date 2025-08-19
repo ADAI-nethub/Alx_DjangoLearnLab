@@ -119,8 +119,9 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsAuthorOrReadOnly]
 
     def get_queryset(self):
+        all_comments = Comment.objects.all()  # ✅ now uses Comment.objects.all()
         post_id = self.kwargs['post_pk']
-        return Comment.objects.filter(post_id=post_id).order_by('created_at')  # Return all comments (instead of filtering by post)
+        return all_comments.filter(post_id=post_id).order_by('created_at')
 
     def perform_create(self, serializer):
         post = generics.get_object_or_404(Post, pk=self.kwargs['post_pk'])
