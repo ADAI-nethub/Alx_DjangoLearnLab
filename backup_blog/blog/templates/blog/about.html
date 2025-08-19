@@ -1,0 +1,33 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>About Our Blog</h1>
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <p class="lead">
+                Welcome to our blog! Here's what we're all about:
+            </p>
+            <p>
+                This blog was created to share interesting ideas and stories.
+                Our mission is to provide valuable content to our readers.
+            </p>
+            <p>
+                Feel free to explore our posts and join our community!
+            </p>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Quick Facts</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Founded: 2023</li>
+                        <li class="list-group-item">Total Posts: {{ posts.count }}</li>
+                        <li class="list-group-item">Active Writers: 3</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
