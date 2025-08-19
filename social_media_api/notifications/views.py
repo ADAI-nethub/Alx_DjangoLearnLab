@@ -1,6 +1,6 @@
 from rest_framework import generics, permissions
 from .models import Notification
-from .serializers import NotificationSerializer
+from .serializers import NotificationSerializer, Response
 
 class NotificationListView(generics.ListAPIView):
     serializer_class = NotificationSerializer
