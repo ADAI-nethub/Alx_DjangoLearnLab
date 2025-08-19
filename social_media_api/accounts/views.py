@@ -7,20 +7,39 @@ from rest_framework.authtoken.models import Token
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 
-from .models import User
 from .serializers import UserSerializer, UserProfileSerializer
 
-User = get_user_model()
+# Use CustomUser alias
+CustomUser = get_user_model()
 
-# Existing views
-class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
+# ------------------------------
+# Authentication Views
+# ------------------------------
+
+class RegisterView(generics.GenericAPIView):
+    queryset = CustomUser.objects.all()  # ✅ explicitly uses CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.AllowAny]
 
-class LoginView(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        return Response({
+            "user_id": user.id,
+            "email": user.email,
+            "username": user.username
+        }, status=status.HTTP_201_CREATED)
+
+
+class LoginView(ObtainAuthToken):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(
+            data=request.data,
+            context={'request': request}
+        )
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
@@ -31,47 +50,33 @@ class LoginView(ObtainAuthToken):
             'username': user.username
         })
 
-# NEW: Add the follow/unfollow functions HERE
+
+# ------------------------------
+# Follow / Unfollow Views
+# ------------------------------
+
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def follow_user(request, user_id):
-    """Follow another user"""
-    user_to_follow = get_object_or_404(User, id=user_id)
-    
+    user_to_follow = get_object_or_404(CustomUser, id=user_id)
+
     if user_to_follow == request.user:
-        return Response(
-            {'error': 'You cannot follow yourself'}, 
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    
+        return Response({'error': 'You cannot follow yourself'}, status=status.HTTP_400_BAD_REQUEST)
+
     if request.user.following.filter(id=user_id).exists():
-        return Response(
-            {'error': 'You are already following this user'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    
+        return Response({'error': 'You are already following this user'}, status=status.HTTP_400_BAD_REQUEST)
+
     request.user.following.add(user_to_follow)
-    return Response(
-        {'message': f'You are now following {user_to_follow.username}'},
-        status=status.HTTP_200_OK
-    )
+    return Response({'message': f'You are now following {user_to_follow.username}'}, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def unfollow_user(request, user_id):
-    """Unfollow a user"""
-    user_to_unfollow = get_object_or_404(User, id=user_id)
-    
-    if not request.user.following.filter(id=user_id).exists():
-        return Response(
-            {'error': 'You are not following this user'},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    
-    request.user.following.remove(user_to_unfollow)
-    return Response(
-        {'message': f'You have unfollowed {user_to_unfollow.username}'},
-        status=status.HTTP_200_OK
-    )
+    user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
 
-# You can add more views below...
+    if not request.user.following.filter(id=user_id).exists():
+        return Response({'error': 'You are not following this user'}, status=status.HTTP_400_BAD_REQUEST)
+
+    request.user.following.remove(user_to_unfollow)
+    return Response({'message': f'You have unfollowed {user_to_unfollow.username}'}, status=status.HTTP_200_OK)
