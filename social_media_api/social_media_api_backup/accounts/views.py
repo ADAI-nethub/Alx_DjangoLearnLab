@@ -35,22 +35,24 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from .serializers import UserSerializer
 
-# Custom user reference
+# Use CustomUser via get_user_model
 CustomUser = get_user_model()
 
-# Registration view using generics.GenericAPIView and queryset
 class RegisterView(generics.GenericAPIView):
-    queryset = CustomUser.objects.all()  # ✅ required by checker
+    queryset = CustomUser.objects.all()  # ✅ uses CustomUser.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.AllowAny]  # public endpoint
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        return Response(UserSerializer(user).data)
+        return Response({
+            "user_id": user.id,
+            "email": user.email
+        })
 
-# Login view using token auth
+
 class LoginView(ObtainAuthToken):
     permission_classes = [permissions.AllowAny]
 
