@@ -1,5 +1,6 @@
 # social_media_api/settings/production.py
 from .base import *
+import os 
 
 # Security settings - like adding locks and alarms
 DEBUG = False  # Don't show blueprints to visitors!
