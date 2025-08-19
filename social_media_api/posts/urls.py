@@ -1,20 +1,20 @@
 # social_media_api/posts/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import PostViewSet, CommentViewSet
+from .views import PostViewSet, CommentViewSet, user_feed
 
 router = DefaultRouter()
-router.register(r'posts', PostViewSet)
-
-# Add these after the router setup
-urlpatterns = [
-    
-]
+router.register(r'posts', PostViewSet, basename='post')
 
 urlpatterns = [
     path('', include(router.urls)),
+    
+
+    # Like / Unlike endpoints
     path('posts/<int:pk>/like/', PostViewSet.as_view({'post': 'like'}), name='post-like'),
     path('posts/<int:pk>/unlike/', PostViewSet.as_view({'post': 'unlike'}), name='post-unlike'),
+
+    # Comments endpoints
     path('posts/<int:post_pk>/comments/', CommentViewSet.as_view({
         'get': 'list',
         'post': 'create'
@@ -25,4 +25,7 @@ urlpatterns = [
         'patch': 'partial_update',
         'delete': 'destroy'
     }), name='comment-detail'),
+
+    # Feed endpoint
+    path('feed/', user_feed, name='user-feed'),
 ]

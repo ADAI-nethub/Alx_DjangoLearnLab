@@ -4,20 +4,26 @@ from rest_framework.authtoken.models import Token
 
 User = get_user_model()
 
-class UserSerializer(serializers.ModelSerializer):
-    # First with no args (to satisfy the check), then add options
-    password = serializers.CharField()
-    password = serializers.CharField(write_only=True, required=True)
-
+class FollowSerializer(serializers.ModelSerializer):
+    followers_count = serializers.ReadOnlyField()
+    following_count = serializers.ReadOnlyField()
+    
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'bio', 'profile_picture')
+        fields = ['id', 'username', 'followers_count', 'following_count']
 
-    def create(self, validated_data):
-        user = get_user_model().objects.create_user(
-            username=validated_data['username'],
-            email=validated_data.get('email'),
-            password=validated_data['password']
-        )
-        Token.objects.create(user=user)
-        return user
+class UserProfileSerializer(serializers.ModelSerializer):
+    is_following = serializers.SerializerMethodField()
+    followers_count = serializers.ReadOnlyField()
+    following_count = serializers.ReadOnlyField()
+    
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'bio', 'profile_picture', 
+                 'followers_count', 'following_count', 'is_following']
+    
+    def get_is_following(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return obj.followers.filter(id=request.user.id).exists()
+        return False
