@@ -1,0 +1,18 @@
+<!-- Add this near the form for better UX -->
+{% if next %}
+  {% if user.is_authenticated %}
+    <div class="alert alert-warning">
+      Your account doesn't have access to this page.
+    </div>
+  {% else %}
+    <div class="alert alert-info">
+      Please login to access this page.
+    </div>
+  {% endif %}
+{% endif %}
+
+<!-- Add remember me option -->
+<div class="form-group form-check">
+  <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
+  <label class="form-check-label" for="remember_me">Remember me</label>
+</div>

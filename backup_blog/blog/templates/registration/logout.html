@@ -1,0 +1,23 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-container text-center">
+    <h2 class="auth-title">Logged Out</h2>
+    <div class="alert alert-success">
+      You have been successfully logged out.
+    </div>
+    <a href="{% url 'login' %}" class="btn btn-primary auth-btn">
+      Login Again
+    </a>
+    <p class="mt-3">
+      Or <a href="{% url 'home' %}">return to homepage</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'blog/css/auth.css' %}">
+{% endblock %}
